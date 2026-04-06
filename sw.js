@@ -4,7 +4,11 @@ const ASSETS_TO_CACHE = [
   './index.html',
   './manifest.json',
   './icon-192.png',
-  './icon-512.png'
+  './icon-512.png',
+  './success.mp3',
+  './click.mp3',
+  './alert.mp3',
+  './completion.mp3'
 ];
 
 // Install Event - Caching assets
