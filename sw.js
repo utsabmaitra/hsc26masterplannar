@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hsc-planner-v1';
+const CACHE_NAME = 'hsc-planner-v2'; // ভার্সন পরিবর্তন করা হয়েছে
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -11,17 +11,18 @@ const ASSETS_TO_CACHE = [
   './completion.mp3'
 ];
 
-// Install Event - Caching assets
+// Install Event - সব ফাইল ক্যাশ করা
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
+      console.log('Caching all assets...');
       return cache.addAll(ASSETS_TO_CACHE);
     })
   );
   self.skipWaiting();
 });
 
-// Activate Event - Cleaning up old caches
+// Activate Event - পুরনো ক্যাশ ডিলিট করা
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -37,14 +38,26 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch Event - Serving from cache when offline
+// Fetch Event - অফলাইনে ক্যাশ থেকে ফাইল সার্ভ করা
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    }).catch(() => {
-      // If offline and request fails, return index.html
-      return caches.match('./index.html');
-    })
-  );
+  const url = new URL(event.request.url);
+
+  // যদি রিকোয়েস্টটি অডিও ফাইল (.mp3) হয়
+  if (url.pathname.endsWith('.mp3')) {
+    event.respondWith(
+      caches.match(event.request).then((response) => {
+        // ক্যাশে থাকলে সেটিই দাও, না থাকলে নেটওয়ার্ক থেকে আনো
+        return response || fetch(event.request);
+      })
+    );
+  } else {
+    // অন্যান্য ফাইলের জন্য সাধারণ লজিক
+    event.respondWith(
+      caches.match(event.request).then((response) => {
+        return response || fetch(event.request);
+      }).catch(() => {
+        return caches.match('./index.html');
+      })
+    );
+  }
 });
