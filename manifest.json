@@ -1,7 +1,7 @@
 {
-  "name": "HSC 26 Masterplannar",
-  "short_name": "HSC Planner",
-  "description": "Premium Offline Study Planner for HSC 26",
+  "name": "Personal Plannar",
+  "short_name": "Personal Plannar",
+  "description": "Premium Personal Study Planner for Students",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0b1120",
